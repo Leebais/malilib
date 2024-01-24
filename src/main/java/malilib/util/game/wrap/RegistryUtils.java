@@ -7,67 +7,86 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
+
+import malilib.util.data.Identifier;
 
 public class RegistryUtils
 {
+    @Nullable
     public static Block getBlockByIdStr(String name)
     {
         try
         {
-            return getBlockById(new ResourceLocation(name));
+            return getBlockById(Integer.parseInt(name));
         }
         catch (Exception e)
         {
-            return Blocks.AIR;
+            return null;
         }
     }
 
-    public static Block getBlockById(ResourceLocation id)
+    @Nullable
+    public static Block getBlockById(int id)
     {
-        Block block = Block.REGISTRY.getObject(id);
-        return block != null ? block : Blocks.AIR;
+        return id >= 0 && id < Block.BY_ID.length ? Block.BY_ID[id] : null;
     }
 
     @Nullable
-    public static ResourceLocation getBlockId(Block block)
+    public static Identifier getBlockId(Block block)
     {
-        return Block.REGISTRY.getNameForObject(block);
+        return new Identifier(String.valueOf(block.id));
     }
 
+    /*
     @Nullable
     public static ResourceLocation getBlockId(IBlockState state)
     {
         return getBlockId(state.getBlock());
     }
+    */
 
     public static String getBlockIdStr(Block block)
     {
-        ResourceLocation id = getBlockId(block);
-        return id != null ? id.toString() : "?";
+        return "minecraft:" + block.id;
     }
 
+    /*
     public static String getBlockIdStr(IBlockState state)
     {
         return getBlockIdStr(state.getBlock());
     }
+    */
 
-    public static Collection<ResourceLocation> getRegisteredBlockIds()
+    public static Collection<Identifier> getRegisteredBlockIds()
     {
-        return Block.REGISTRY.getKeys();
+        ArrayList<Identifier> list = new ArrayList<>();
+
+        for (int i = 0; i < Block.BY_ID.length; ++i)
+        {
+            Block block = Block.BY_ID[i];
+
+            if (block != null)
+            {
+                list.add(getBlockId(block));
+            }
+        }
+
+        return list;
     }
 
     public static List<Block> getSortedBlockList()
     {
         List<Block> blocks = new ArrayList<>();
 
-        for (Block block : Block.REGISTRY)
+        for (int i = 0; i < Block.BY_ID.length; ++i)
         {
-            blocks.add(block);
+            Block block = Block.BY_ID[i];
+
+            if (block != null)
+            {
+                blocks.add(block);
+            }
         }
 
         blocks.sort(Comparator.comparing(RegistryUtils::getBlockIdStr));
@@ -75,52 +94,69 @@ public class RegistryUtils
         return blocks;
     }
 
+    @Nullable
     public static Item getItemByIdStr(String name)
     {
         try
         {
-            return getItemById(new ResourceLocation(name));
+            return getItemById(Integer.parseInt(name));
         }
         catch (Exception e)
         {
-            return Items.AIR;
+            return null;
         }
     }
 
-    public static Item getItemById(ResourceLocation id)
+    @Nullable
+    public static Item getItemById(int id)
     {
-        Item item = Item.REGISTRY.getObject(id);
-        return item != null ? item : Items.AIR;
+        return id >= 0 && id < Item.BY_ID.length ? Item.BY_ID[id] : null;
     }
 
     @Nullable
-    public static ResourceLocation getItemId(Item item)
+    public static Identifier getItemId(Item item)
     {
-        return Item.REGISTRY.getNameForObject(item);
+        return new Identifier(String.valueOf(item.id));
     }
 
     public static String getItemIdStr(Item item)
     {
-        ResourceLocation id = getItemId(item);
-        return id != null ? id.toString() : "?";
+        return "minecraft:" + item.id;
     }
 
-    public static Collection<ResourceLocation> getRegisteredItemIds()
+    public static Collection<Identifier> getRegisteredItemIds()
     {
-        return Item.REGISTRY.getKeys();
+        ArrayList<Identifier> list = new ArrayList<>();
+
+        for (int i = 0; i < Item.BY_ID.length; ++i)
+        {
+            Item item = Item.BY_ID[i];
+
+            if (item != null)
+            {
+                list.add(getItemId(item));
+            }
+        }
+
+        return list;
     }
 
     public static List<Item> getSortedItemList()
     {
-        List<Item> items = new ArrayList<>();
+        List<Item> blocks = new ArrayList<>();
 
-        for (Item item : Item.REGISTRY)
+        for (int i = 0; i < Item.BY_ID.length; ++i)
         {
-            items.add(item);
+            Item item = Item.BY_ID[i];
+
+            if (item != null)
+            {
+                blocks.add(item);
+            }
         }
 
-        items.sort(Comparator.comparing(RegistryUtils::getItemIdStr));
+        blocks.sort(Comparator.comparing(RegistryUtils::getItemIdStr));
 
-        return items;
+        return blocks;
     }
 }

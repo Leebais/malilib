@@ -8,12 +8,9 @@ import com.google.common.collect.ImmutableList;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
-import net.minecraft.potion.Potion;
-import net.minecraft.util.ResourceLocation;
 
 import malilib.config.option.list.BlockListConfig;
 import malilib.config.option.list.ItemListConfig;
-import malilib.config.option.list.StatusEffectListConfig;
 import malilib.config.option.list.ValueListConfig;
 import malilib.util.data.Identifier;
 import malilib.util.restriction.UsageRestriction.ListType;
@@ -118,6 +115,7 @@ public class BlackWhiteList<TYPE>
         return new BlackWhiteList<>(type, blackList, whiteList);
     }
 
+    /*
     public static <TYPE> BlackWhiteList<TYPE> of(ListType type,
                                                  ValueListConfig<TYPE> blackList,
                                                  ValueListConfig<TYPE> whiteList,
@@ -128,6 +126,7 @@ public class BlackWhiteList<TYPE>
                                     getRegistryBasedToStringConverter(toIdLookup),
                                     getRegistryBasedFromStringConverter(toValueLookup));
     }
+    */
 
     public static BlackWhiteList<Item> items(ListType type, ImmutableList<Item> blackList, ImmutableList<Item> whiteList)
     {
@@ -150,6 +149,7 @@ public class BlackWhiteList<TYPE>
                                  BlockListConfig.create("malilib.label.list_type.whitelist", whiteList));
     }
 
+    /*
     public static BlackWhiteList<Potion> effects(ListType type, List<String> blackList, List<String> whiteList)
     {
         return BlackWhiteList.of(type,
@@ -158,6 +158,7 @@ public class BlackWhiteList<TYPE>
                                  Potion.REGISTRY::getObject,
                                  Potion.REGISTRY::getNameForObject);
     }
+    */
 
     @Override
     public boolean equals(Object o)
@@ -182,6 +183,7 @@ public class BlackWhiteList<TYPE>
         return result;
     }
 
+    /*
     public static <TYPE> Function<TYPE, String> getRegistryBasedToStringConverter(Function<TYPE, ResourceLocation> lookup)
     {
         return (t) -> {
@@ -189,6 +191,7 @@ public class BlackWhiteList<TYPE>
             return id != null ? id.toString() : "<N/A>";
         };
     }
+    */
 
     public static <TYPE> Function<String, TYPE> getRegistryBasedFromStringConverter(Function<Identifier, TYPE> lookup)
     {

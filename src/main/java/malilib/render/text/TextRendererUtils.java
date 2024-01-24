@@ -129,6 +129,7 @@ public class TextRendererUtils
         charWidthArray[32] = 4; // space
     }
 
+    /*
     public static String bidiReorder(String text)
     {
         try
@@ -142,6 +143,7 @@ public class TextRendererUtils
             return text;
         }
     }
+    */
 
     public static String stripVanillaFormattingCodes(String text)
     {

@@ -1,24 +1,21 @@
 package malilib.util.position;
 
-import net.minecraft.util.Rotation;
-
 import malilib.util.StringUtils;
 
 public enum BlockRotation
 {
-    NONE    (0, "none",       Rotation.NONE),
-    CW_90   (1, "rotate_90",  Rotation.CLOCKWISE_90),
-    CW_180  (2, "rotate_180", Rotation.CLOCKWISE_180),
-    CCW_90  (3, "rotate_270", Rotation.COUNTERCLOCKWISE_90);
+    NONE    (0, "none"),
+    CW_90   (1, "rotate_90"),
+    CW_180  (2, "rotate_180"),
+    CCW_90  (3, "rotate_270");
 
     public static final BlockRotation[] VALUES = values();
 
     private final int index;
     private final String name;
     private final String translationKey;
-    private final Rotation vanillaRotation;
 
-    BlockRotation(int index, String name, Rotation vanillaRotation)
+    BlockRotation(int index, String name)
     {
         this.index = index;
         this.name = name;
@@ -76,10 +73,12 @@ public enum BlockRotation
         return VALUES[index];
     }
 
+    /*
     public Rotation getVanillaRotation()
     {
         return this.vanillaRotation;
     }
+    */
 
     public static BlockRotation byName(String name)
     {

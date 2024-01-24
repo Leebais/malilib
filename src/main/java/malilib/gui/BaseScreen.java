@@ -2,6 +2,7 @@ package malilib.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import javax.annotation.Nullable;
@@ -9,7 +10,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 
 import malilib.MaLiLibConfigs;
 import malilib.gui.icon.DefaultIcons;
@@ -32,8 +33,10 @@ import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Vec2i;
 
-public abstract class BaseScreen extends GuiScreen
+public abstract class BaseScreen extends Screen
 {
+    public static final boolean IS_MAC = isMac();
+
     protected final Minecraft mc = GameWrap.getClient();
     protected final TextRenderer textRenderer = TextRenderer.INSTANCE;
     protected final List<Runnable> tasks = new ArrayList<>();
@@ -45,7 +48,7 @@ public abstract class BaseScreen extends GuiScreen
     private final List<InteractableWidget> widgets = new ArrayList<>();
     private String titleString = "";
     @Nullable protected StyledTextLine titleText;
-    @Nullable private GuiScreen parent;
+    @Nullable private Screen parent;
     @Nullable protected InteractableWidget focusedWidget;
     @Nullable protected InteractableWidget hoveredWidgetForContext;
     @Nullable protected InteractableWidget hoveredWidgetForHoverInfo;
@@ -88,24 +91,24 @@ public abstract class BaseScreen extends GuiScreen
     }
 
     @Override
-    public void initGui()
+    public void init()
     {
-        super.initGui();
+        super.init();
         this.initScreen();
     }
 
     @Override
-    public void onGuiClosed()
+    public void removed()
     {
         this.onScreenClosed();
     }
 
     @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height)
+    public void init(Minecraft mc, int width, int height)
     {
         if (this.getParent() != null)
         {
-            this.getParent().setWorldAndResolution(mc, width, height);
+            this.getParent().init(mc, width, height);
         }
 
         this.onScreenResolutionSet(width, height);
@@ -116,13 +119,13 @@ public abstract class BaseScreen extends GuiScreen
             height = this.getTotalHeight();
         }
 
-        super.setWorldAndResolution(mc, width, height);
+        super.init(mc, width, height);
     }
 
     @Override
-    public boolean doesGuiPauseGame()
+    public boolean isPauseScreen()
     {
-        return this.getParent() != null && this.getParent().doesGuiPauseGame();
+        return this.getParent() != null && this.getParent().isPauseScreen();
     }
 
     protected void initScreen()
@@ -242,8 +245,8 @@ public abstract class BaseScreen extends GuiScreen
     {
         int x;
         int y;
-        GuiScreen parent = this.getParent();
-        GuiScreen current = GuiUtils.getCurrentScreen();
+        Screen parent = this.getParent();
+        Screen current = GuiUtils.getCurrentScreen();
 
         if (parent instanceof BaseScreen)
         {
@@ -341,7 +344,7 @@ public abstract class BaseScreen extends GuiScreen
     }
 
     @Nullable
-    public GuiScreen getParent()
+    public Screen getParent()
     {
         return this.parent;
     }
@@ -383,7 +386,7 @@ public abstract class BaseScreen extends GuiScreen
         }
     }
 
-    public BaseScreen setParent(@Nullable GuiScreen parent)
+    public BaseScreen setParent(@Nullable Screen parent)
     {
         // Don't allow nesting the GUI with itself...
         if (parent != this)
@@ -479,13 +482,13 @@ public abstract class BaseScreen extends GuiScreen
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    public void render(int mouseX, int mouseY, float partialTicks)
     {
         this.runTasks();
 
         if (this.shouldRenderParent && this.getParent() != null)
         {
-            this.getParent().drawScreen(mouseX, mouseY, partialTicks);
+            this.getParent().render(mouseX, mouseY, partialTicks);
         }
 
         RenderWrap.color(1f, 1f, 1f, 1f);
@@ -590,7 +593,7 @@ public abstract class BaseScreen extends GuiScreen
     }
 
     @Override
-    public void handleMouseInput()
+    public void handleMouse()
     {
         int mouseX = GuiUtils.getMouseScreenX(this.getTotalWidth());
         int mouseY = GuiUtils.getMouseScreenY(this.getTotalHeight());
@@ -708,7 +711,7 @@ public abstract class BaseScreen extends GuiScreen
     }
 
     @Override
-    public void handleKeyboardInput()
+    public void handleKeyboard()
     {
         if (Keyboard.getEventKeyState() == false &&
             this.onKeyReleased(Keyboard.getEventKey(), 0, 0))
@@ -716,7 +719,7 @@ public abstract class BaseScreen extends GuiScreen
             return;
         }
 
-        super.handleKeyboardInput();
+        super.handleKeyboard();
 
         // Update after the input is handled
         //this.updateTopHoveredWidgetForHoverInfo(this.lastMouseX, this.lastMouseY);
@@ -724,7 +727,7 @@ public abstract class BaseScreen extends GuiScreen
     }
 
     @Override
-    protected void keyTyped(char charIn, int keyCode)
+    protected void keyPressed(char charIn, int keyCode)
     {
         if (keyCode == 0 && charIn >= ' ')
         {
@@ -873,7 +876,7 @@ public abstract class BaseScreen extends GuiScreen
         return this;
     }
 
-    public BaseScreen setPopupGuiZLevelBasedOn(@Nullable GuiScreen gui)
+    public BaseScreen setPopupGuiZLevelBasedOn(@Nullable Screen gui)
     {
         if (gui instanceof BaseScreen)
         {
@@ -1016,9 +1019,9 @@ public abstract class BaseScreen extends GuiScreen
         return StringUtils.getStringWidth(text);
     }
 
-    public static boolean openScreen(@Nullable GuiScreen screen)
+    public static boolean openScreen(@Nullable Screen screen)
     {
-        GameWrap.getClient().displayGuiScreen(screen);
+        GameWrap.getClient().openScreen(screen);
         return true;
     }
 
@@ -1028,7 +1031,7 @@ public abstract class BaseScreen extends GuiScreen
         return openScreen(screen);
     }
 
-    public static ActionResult openScreenAction(@Nullable GuiScreen screen)
+    public static ActionResult openScreenAction(@Nullable Screen screen)
     {
         openScreen(screen);
         return ActionResult.SUCCESS;
@@ -1078,38 +1081,67 @@ public abstract class BaseScreen extends GuiScreen
 
     public static void applyCustomScreenScaleChange()
     {
-        GuiScreen screen = GuiUtils.getCurrentScreen();
+        Screen screen = GuiUtils.getCurrentScreen();
 
         if (screen instanceof BaseScreen)
         {
             ((BaseScreen) screen).updateCustomScreenScale();
-            screen.initGui();
+            screen.init();
         }
     }
 
     public static boolean isShiftDown()
     {
-        return isShiftKeyDown();
+        return Keyboard.isKeyDown(42) || Keyboard.isKeyDown(54);
     }
 
     public static boolean isCtrlDown()
     {
-        return isCtrlKeyDown();
+        if (IS_MAC)
+        {
+            return Keyboard.isKeyDown(219) || Keyboard.isKeyDown(220);
+        }
+        else
+        {
+            return Keyboard.isKeyDown(29) || Keyboard.isKeyDown(157);
+        }
     }
 
     public static boolean isAltDown()
     {
-        return isAltKeyDown();
+        return Keyboard.isKeyDown(56) || Keyboard.isKeyDown(184);
+    }
+
+    public static boolean isKeyComboCtrlX(int keyID)
+    {
+        return keyID == Keys.KEY_X && isCtrlDown() && isShiftDown() == false && isAltDown() == false;
+    }
+
+    public static boolean isKeyComboCtrlV(int keyID)
+    {
+        return keyID == Keys.KEY_V && isCtrlDown() && isShiftDown() == false && isAltDown() == false;
+    }
+
+    public static boolean isKeyComboCtrlC(int keyID)
+    {
+        return keyID == Keys.KEY_C && isCtrlDown() && isShiftDown() == false && isAltDown() == false;
+    }
+
+    public static boolean isKeyComboCtrlA(int keyID)
+    {
+        return keyID == Keys.KEY_A && isCtrlDown() && isShiftDown() == false && isAltDown() == false;
     }
 
     public static void setStringToClipboard(String str)
     {
-        setClipboardString(str);
+        // TODO b1.7.3
+        //setClipboardString(str);
     }
 
     public static String getStringFromClipboard()
     {
-        return getClipboardString();
+        // TODO b1.7.3
+        return ""; //getClipboardString();
     }
 
     public void renderDebug(ScreenContext ctx)
@@ -1159,5 +1191,11 @@ public abstract class BaseScreen extends GuiScreen
             boolean hovered = widget.isMouseOver(ctx.mouseX, ctx.mouseY);
             widget.renderDebug(hovered, ctx);
         }
+    }
+
+    private static boolean isMac()
+    {
+        String string = System.getProperty("os.name").toLowerCase(Locale.ROOT);
+        return string.contains("mac");
     }
 }

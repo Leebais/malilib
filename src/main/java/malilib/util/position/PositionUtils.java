@@ -151,7 +151,7 @@ public class PositionUtils
         }
         else if (pitch <= -verticalThreshold)
         {
-            return BlockPos.ofFloored(x, Math.ceil(entity.getEntityBoundingBox().maxY), z);
+            return BlockPos.ofFloored(x, Math.ceil(entity.shape.maxY), z);
         }
 
         double width = entity.width;

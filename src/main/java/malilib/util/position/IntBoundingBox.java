@@ -4,10 +4,6 @@ import javax.annotation.Nullable;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 
-import net.minecraft.nbt.NBTTagIntArray;
-import net.minecraft.util.math.Vec3i;
-import net.minecraft.world.gen.structure.StructureBoundingBox;
-
 import malilib.MaLiLib;
 
 public class IntBoundingBox
@@ -105,6 +101,7 @@ public class IntBoundingBox
         return 0;
     }
 
+    /* TODO b1.7.3
     public StructureBoundingBox toVanillaBox()
     {
         return new StructureBoundingBox(this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ);
@@ -114,6 +111,7 @@ public class IntBoundingBox
     {
         return new NBTTagIntArray(new int[] { this.minX, this.minY, this.minZ, this.maxX, this.maxY, this.maxZ });
     }
+    */
 
     public JsonArray toJson()
     {
@@ -171,10 +169,12 @@ public class IntBoundingBox
         return null;
     }
 
+    /* TODO b1.7.3
     public static IntBoundingBox fromVanillaBox(StructureBoundingBox box)
     {
         return createProper(box.minX, box.minY, box.minZ, box.maxX, box.maxY, box.maxZ);
     }
+    */
 
     public static IntBoundingBox createProper(Vec3i pos1, Vec3i pos2)
     {

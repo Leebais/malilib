@@ -2,8 +2,6 @@ package malilib.render.buffer;
 
 import java.nio.ByteBuffer;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-
 import malilib.util.data.Color4f;
 
 public interface VertexBuilder
@@ -36,6 +34,7 @@ public interface VertexBuilder
         return this.posUvColor(x, y, z, u, v, r, g, b, a);
     }
 
+    /*
     VertexBuilder putBakedQuad(BakedQuad quad, int colorARGB);
 
     VertexBuilder putBakedQuad(BakedQuad quad, int colorARGB, int colorMultiplier);
@@ -45,7 +44,6 @@ public interface VertexBuilder
     VertexBuilder putBlockQuad(double x, double y, double z, BakedQuad quad, float cma, float cmr, float cmg, float cmb,
                                int lightMapVertex0, int lightMapVertex1, int lightMapVertex2, int lightMapVertex3);
 
-    /*
     void addVertexData(int[] data);
 
     void putPosition(double x, double y, double z);

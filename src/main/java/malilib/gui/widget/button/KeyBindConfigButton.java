@@ -8,8 +8,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 
-import net.minecraft.client.settings.GameSettings;
-import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.client.options.KeyBinding;
 
 import malilib.MaLiLibConfigs;
 import malilib.input.Hotkey;
@@ -370,9 +369,9 @@ public class KeyBindConfigButton extends GenericButton
 
         for (KeyBinding vanillaKey : GameWrap.getOptions().keyBindings)
         {
-            if (keyList.contains(vanillaKey.getKeyCode()))
+            if (keyList.contains(vanillaKey.keyCode))
             {
-                overlaps.computeIfAbsent(vanillaKey.getKeyCategory(), k -> new ArrayList<>()).add(vanillaKey);
+                overlaps.computeIfAbsent("Minecraft", k -> new ArrayList<>()).add(vanillaKey);
             }
         }
 
@@ -393,8 +392,8 @@ public class KeyBindConfigButton extends GenericButton
                 for (KeyBinding overlap : overlaps.get(category))
                 {
                     String translationKey = "malilib.hover.button.keybind.overlap.keybind";
-                    String name = StringUtils.translate(overlap.getKeyDescription());
-                    String keys = GameSettings.getKeyDisplayString(overlap.getKeyCode());
+                    String name = StringUtils.translate(overlap.name);
+                    String keys = Keys.getStorageStringForKeyCode(overlap.keyCode, Keys::charAsStorageString);
                     overlapInfoOut.add(StringUtils.translate(translationKey, name, keys));
                 }
             }

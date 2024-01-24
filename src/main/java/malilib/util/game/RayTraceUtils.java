@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.RayTraceResult;
@@ -400,7 +399,7 @@ public class RayTraceUtils
             this.mutablePos.set(this.blockX, this.blockY, this.blockZ);
         }
 
-        public boolean isValidBlock(IBlockState state)
+        public boolean isValidBlock(@Nullable Block state)
         {
             return this.blockFilter.test(state);
         }
@@ -458,7 +457,7 @@ public class RayTraceUtils
             this.predicate = predicate;
         }
 
-        public boolean handled(IBlockState blockState)
+        public boolean handled(Block blockState)
         {
             return this.predicate.test(blockState);
         }
@@ -475,6 +474,6 @@ public class RayTraceUtils
 
     public interface BlockStatePredicate
     {
-        boolean test(IBlockState state);
+        boolean test(Block state);
     }
 }

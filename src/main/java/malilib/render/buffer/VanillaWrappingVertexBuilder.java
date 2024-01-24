@@ -10,8 +10,6 @@ import com.google.common.primitives.Floats;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-
 import malilib.MaLiLib;
 import malilib.util.MathUtils;
 import malilib.util.game.wrap.RenderWrap;
@@ -87,89 +85,6 @@ public class VanillaWrappingVertexBuilder implements VertexBuilder
         this.putUv(u, v);
         this.putColor(r, g, b, a);
         this.onVertexAdded();
-        return this;
-    }
-
-    @Override
-    public VertexBuilder putBakedQuad(double x, double y, double z, BakedQuad quad, int colorARGB)
-    {
-        this.putBakedQuad(quad, colorARGB);
-        this.addToQuadPosition(x, y, z);
-        return this;
-    }
-
-    @Override
-    public VertexBuilder putBakedQuad(BakedQuad quad, int colorARGB, int colorMultiplier)
-    {
-        int ca = (colorARGB >> 24) & 0xFF;
-        int cr = (colorARGB >> 16) & 0xFF;
-        int cg = (colorARGB >>  8) & 0xFF;
-        int cb = (colorARGB      ) & 0xFF;
-        int ma = (colorMultiplier >> 24) & 0xFF;
-        int mr = (colorMultiplier >> 16) & 0xFF;
-        int mg = (colorMultiplier >>  8) & 0xFF;
-        int mb = (colorMultiplier      ) & 0xFF;
-        int a = ca * ma / 255;
-        int r = cr * mr / 255;
-        int g = cg * mg / 255;
-        int b = cb * mb / 255;
-        int color = (a << 24) | (r << 16) | (g << 8) | b;
-
-        return this.putBakedQuad(quad, color);
-    }
-
-    @Override
-    public VertexBuilder putBakedQuad(BakedQuad quad, int colorARGB)
-    {
-        this.addQuadVertexData(quad.getVertexData());
-        net.minecraft.util.math.Vec3i normal = quad.getFace().getDirectionVec();
-        this.putNormalForQuad(normal.getX(), normal.getY(), normal.getZ());
-        this.putColorForLastQuad(colorARGB);
-        return this;
-    }
-
-    @Override
-    public VertexBuilder putBlockQuad(double x, double y, double z,
-                                      BakedQuad quad, float cma, float cmr, float cmg, float cmb,
-                                      int lightMapVertex0, int lightMapVertex1, int lightMapVertex2, int lightMapVertex3)
-    {
-        System.arraycopy(quad.getVertexData(), 0, this.quadDataWorkBuffer, 0, this.quadDataWorkBuffer.length);
-
-        int offset = this.vertexSize >> 2; // vertex size in int buffer entries
-        int index = this.vertexFormat.getColorOffset() >> 2;
-        this.quadDataWorkBuffer[index             ] = this.getMultipliedPackedColor(this.quadDataWorkBuffer[index             ], cma, cmr, cmg, cmb);
-        this.quadDataWorkBuffer[index + offset    ] = this.getMultipliedPackedColor(this.quadDataWorkBuffer[index + offset    ], cma, cmr, cmg, cmb);
-        this.quadDataWorkBuffer[index + offset * 2] = this.getMultipliedPackedColor(this.quadDataWorkBuffer[index + offset * 2], cma, cmr, cmg, cmb);
-        this.quadDataWorkBuffer[index + offset * 3] = this.getMultipliedPackedColor(this.quadDataWorkBuffer[index + offset * 3], cma, cmr, cmg, cmb);
-
-        index = this.vertexFormat.getLightMapOffset() >> 2;
-        this.quadDataWorkBuffer[index             ] = lightMapVertex0;
-        this.quadDataWorkBuffer[index + offset    ] = lightMapVertex1;
-        this.quadDataWorkBuffer[index + offset * 2] = lightMapVertex2;
-        this.quadDataWorkBuffer[index + offset * 3] = lightMapVertex3;
-
-        /*
-        net.minecraft.util.math.Vec3i normal = quad.getFace().getDirectionVec();
-        int packedNormal = this.getPackedNormal(normal.getX(), normal.getY(), normal.getZ());
-        index = this.vertexFormat.getNormalOffset() >> 2;
-        this.quadDataWorkBuffer[index             ] = packedNormal;
-        this.quadDataWorkBuffer[index + offset    ] = packedNormal;
-        this.quadDataWorkBuffer[index + offset * 2] = packedNormal;
-        this.quadDataWorkBuffer[index + offset * 3] = packedNormal;
-        */
-
-        index = this.vertexFormat.getPositionOffset() >> 2;
-
-        for (int vertexIndex = 0; vertexIndex < 4; ++vertexIndex)
-        {
-            int baseOffset = index + vertexIndex * offset;
-            this.quadDataWorkBuffer[baseOffset    ] = Float.floatToRawIntBits((float) x + this.offset[0] + Float.intBitsToFloat(this.quadDataWorkBuffer[baseOffset    ]));
-            this.quadDataWorkBuffer[baseOffset + 1] = Float.floatToRawIntBits((float) y + this.offset[1] + Float.intBitsToFloat(this.quadDataWorkBuffer[baseOffset + 1]));
-            this.quadDataWorkBuffer[baseOffset + 2] = Float.floatToRawIntBits((float) z + this.offset[2] + Float.intBitsToFloat(this.quadDataWorkBuffer[baseOffset + 2]));
-        }
-
-        this.addQuadVertexData(this.quadDataWorkBuffer);
-
         return this;
     }
 

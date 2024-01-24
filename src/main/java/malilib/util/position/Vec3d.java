@@ -85,10 +85,17 @@ public class Vec3d
         return normalized(this.x, this.y, this.z);
     }
 
+    /*
     public net.minecraft.util.math.Vec3d toVanilla()
     {
         return new net.minecraft.util.math.Vec3d(this.x, this.y, this.z);
     }
+
+    public static Vec3d of(net.minecraft.util.math.Vec3i pos)
+    {
+        return new Vec3d(pos.getX(), pos.getY(), pos.getZ());
+    }
+    */
 
     public static Vec3d of(double x, double y, double z)
     {
@@ -98,11 +105,6 @@ public class Vec3d
     public static Vec3d of(net.minecraft.util.math.Vec3d pos)
     {
         return new Vec3d(pos.x, pos.y, pos.z);
-    }
-
-    public static Vec3d of(net.minecraft.util.math.Vec3i pos)
-    {
-        return new Vec3d(pos.getX(), pos.getY(), pos.getZ());
     }
 
     public static Vec3d normalized(double x, double y, double z)

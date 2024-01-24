@@ -18,8 +18,6 @@ import com.google.gson.JsonObject;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import net.minecraft.client.multiplayer.ServerData;
-
 import malilib.MaLiLib;
 import malilib.MaLiLibConfigs;
 import malilib.MaLiLibReference;

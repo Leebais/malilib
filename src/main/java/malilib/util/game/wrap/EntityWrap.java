@@ -1,14 +1,10 @@
 package malilib.util.game.wrap;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.living.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 
 import malilib.util.MathUtils;
-import malilib.util.inventory.InventoryUtils;
 import malilib.util.position.BlockPos;
 import malilib.util.position.Direction;
 import malilib.util.position.Vec3d;
@@ -57,56 +53,57 @@ public class EntityWrap
 
     public static double getX(Entity entity)
     {
-        return entity.posX;
+        return entity.x;
     }
 
     public static double getY(Entity entity)
     {
-        return entity.posY;
+        return entity.y;
     }
 
     public static double getZ(Entity entity)
     {
-        return entity.posZ;
+        return entity.z;
     }
 
     public static float getYaw(Entity entity)
     {
-        return entity.rotationYaw;
+        return entity.yaw;
     }
 
     public static float getPitch(Entity entity)
     {
-        return entity.rotationPitch;
+        return entity.pitch;
     }
 
     public static double lerpX(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosX;
+        // TODO b1.7.3 is this the correct field?
+        double lastTickPos = entity.prevTickX;
         return lastTickPos + (getX(entity) - lastTickPos) * tickDelta;
     }
 
     public static double lerpY(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosY;
+        double lastTickPos = entity.prevTickY;
         return lastTickPos + (getY(entity) - lastTickPos) * tickDelta;
     }
 
     public static double lerpZ(Entity entity, float tickDelta)
     {
-        double lastTickPos = entity.lastTickPosZ;
+        double lastTickPos = entity.prevTickZ;
         return lastTickPos + (getZ(entity) - lastTickPos) * tickDelta;
     }
 
     public static float lerpPitch(Entity entity, float tickDelta)
     {
-        float lastTickPitch = entity.prevRotationPitch;
+        float lastTickPitch = entity.prevPitch;
         return lastTickPitch + (getPitch(entity) - lastTickPitch) * tickDelta;
     }
 
     public static float lerpYaw(Entity entity, float tickDelta)
     {
-        float lastTickYaw = entity.prevRotationYaw;
+        float lastTickYaw = entity.prevYaw;
         return lastTickYaw + (getYaw(entity) - lastTickYaw) * tickDelta;
     }
 
@@ -127,12 +124,12 @@ public class EntityWrap
 
     public static void setYaw(Entity entity, float yaw)
     {
-        entity.rotationYaw = yaw;
+        entity.yaw = yaw;
     }
 
     public static void setPitch(Entity entity, float pitch)
     {
-        entity.rotationPitch = pitch;
+        entity.pitch = pitch;
     }
 
     public static Direction getClosestHorizontalLookingDirection(Entity entity)
@@ -166,11 +163,12 @@ public class EntityWrap
         return getClosestHorizontalLookingDirection(entity);
     }
 
-    public static ItemStack getMainHandItem(EntityLivingBase entity)
+    public static ItemStack getMainHandItem(PlayerEntity entity)
     {
-        return getHeldItem(entity, EnumHand.MAIN_HAND);
+        return entity.inventory.getMainHandStack();
     }
 
+    /*
     public static ItemStack getOffHandItem(EntityLivingBase entity)
     {
         return getHeldItem(entity, EnumHand.OFF_HAND);
@@ -180,12 +178,14 @@ public class EntityWrap
     {
         return entity.getHeldItem(hand);
     }
+    */
 
     /**
      * Checks if the requested item is currently in the entity's hand such that it would be used for using/placing.
      * This means, that it must either be in the main hand, or the main hand must be empty and the item is in the offhand.
      * @param lenient if true, then NBT tags and also damage of damageable items are ignored
      */
+    /*
     @Nullable
     public static EnumHand getUsedHandForItem(EntityLivingBase entity, ItemStack stack, boolean lenient)
     {
@@ -201,4 +201,5 @@ public class EntityWrap
 
         return hand;
     }
+    */
 }

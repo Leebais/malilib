@@ -6,7 +6,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 
-public class HashMapPalette<T> implements Palette<T>
+public class HashMapPalette <T> implements Palette<T>
 {
     protected final PaletteResizeHandler<T> paletteResizer;
     protected final Object2IntOpenHashMap<T> valueToIdMap;

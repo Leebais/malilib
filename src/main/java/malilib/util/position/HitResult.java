@@ -3,7 +3,6 @@ package malilib.util.position;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.RayTraceResult;
 
 public class HitResult
 {
@@ -26,16 +25,6 @@ public class HitResult
     public BlockPos getBlockPos()
     {
         return this.blockPos;
-    }
-
-    public net.minecraft.util.math.RayTraceResult toVanilla()
-    {
-        switch (this.type)
-        {
-            case BLOCK:     return new RayTraceResult(this.pos.toVanilla(), this.side.getVanillaDirection(), this.blockPos.toVanillaPos());
-            case ENTITY:    return new RayTraceResult(this.entity, this.pos.toVanilla());
-            default:        return new RayTraceResult(RayTraceResult.Type.MISS, net.minecraft.util.math.Vec3d.ZERO, Direction.DOWN.getVanillaDirection(), net.minecraft.util.math.BlockPos.ORIGIN);
-        }
     }
 
     @Override
@@ -67,6 +56,17 @@ public class HitResult
         return new HitResult(Type.ENTITY, null, null, exactPos, entity);
     }
 
+    /*
+    public net.minecraft.util.math.RayTraceResult toVanilla()
+    {
+        switch (this.type)
+        {
+            case BLOCK:     return new RayTraceResult(this.pos.toVanilla(), this.side.getVanillaDirection(), this.blockPos.toVanillaPos());
+            case ENTITY:    return new RayTraceResult(this.entity, this.pos.toVanilla());
+            default:        return new RayTraceResult(RayTraceResult.Type.MISS, net.minecraft.util.math.Vec3d.ZERO, Direction.DOWN.getVanillaDirection(), net.minecraft.util.math.BlockPos.ORIGIN);
+        }
+    }
+
     public static HitResult of(@Nullable RayTraceResult trace)
     {
         if (trace == null)
@@ -83,4 +83,5 @@ public class HitResult
                 return miss();
         }
     }
+    */
 }

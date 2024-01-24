@@ -1,18 +1,16 @@
 package malilib.util.position;
 
-import net.minecraft.util.EnumFacing;
-
 import malilib.util.MathUtils;
 import malilib.util.StringUtils;
 
 public enum Direction
 {
-    DOWN (0, 1, -1, Axis.Y, AxisDirection.NEGATIVE, "down",  EnumFacing.DOWN),
-    UP   (1, 0, -1, Axis.Y, AxisDirection.POSITIVE, "up",    EnumFacing.UP),
-    NORTH(2, 3,  2, Axis.Z, AxisDirection.NEGATIVE, "north", EnumFacing.NORTH),
-    SOUTH(3, 2,  0, Axis.Z, AxisDirection.POSITIVE, "south", EnumFacing.SOUTH),
-    WEST (4, 5,  1, Axis.X, AxisDirection.NEGATIVE, "west",  EnumFacing.WEST),
-    EAST (5, 4,  3, Axis.X, AxisDirection.POSITIVE, "east",  EnumFacing.EAST);
+    DOWN (0, 1, -1, Axis.Y, AxisDirection.NEGATIVE, "down"),
+    UP   (1, 0, -1, Axis.Y, AxisDirection.POSITIVE, "up"),
+    NORTH(2, 3,  2, Axis.Z, AxisDirection.NEGATIVE, "north"),
+    SOUTH(3, 2,  0, Axis.Z, AxisDirection.POSITIVE, "south"),
+    WEST (4, 5,  1, Axis.X, AxisDirection.NEGATIVE, "west"),
+    EAST (5, 4,  3, Axis.X, AxisDirection.POSITIVE, "east");
 
     public static final Direction[] ALL_DIRECTIONS = new Direction[] { Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST };
     public static final Direction[] HORIZONTAL_DIRECTIONS = new Direction[] { Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST };
@@ -27,11 +25,10 @@ public enum Direction
     private final int horizontalIndex;
     private final Axis axis;
     private final AxisDirection axisDirection;
-    private final EnumFacing vanillaDirection;
     private final String name;
     private final String translationKey;
 
-    Direction(int index, int oppositeId, int horizontalIndex, Axis axis, AxisDirection axisDirection, String name, EnumFacing vanillaDirection)
+    Direction(int index, int oppositeId, int horizontalIndex, Axis axis, AxisDirection axisDirection, String name)
     {
         this.index = index;
         this.offsetX = axis == Axis.X ? axisDirection.getOffset() : 0;
@@ -43,7 +40,6 @@ public enum Direction
         this.axisDirection = axisDirection;
         this.name = name;
         this.translationKey = "malilib.label.direction." + name;
-        this.vanillaDirection = vanillaDirection;
     }
 
     public int getIndex()
@@ -89,11 +85,6 @@ public enum Direction
     public Direction getOpposite()
     {
         return ALL_DIRECTIONS[this.oppositeId];
-    }
-
-    public EnumFacing getVanillaDirection()
-    {
-        return this.vanillaDirection;
     }
 
     /**
@@ -223,10 +214,12 @@ public enum Direction
         return HORIZONTALS_BY_INDEX[horizontalIndexIn & 3];
     }
 
+    /*
     public static Direction of(EnumFacing facing)
     {
         return byIndex(facing.getIndex());
     }
+    */
 
     /**
      * "Get the Direction corresponding to the given angle in degrees (0-360).

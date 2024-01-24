@@ -1,36 +1,38 @@
 package malilib.util.game.wrap;
 
-import javax.annotation.Nullable;
-
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NbtCompound;
 
 public class ItemWrap
 {
+    public static final ItemStack EMPTY_STACK = null;
+
+    /*
     @Nullable
-    public static NBTTagCompound getTag(ItemStack stack)
+    public static NbtCompound getTag(ItemStack stack)
     {
         return stack.getTagCompound();
     }
 
-    public static void setTag(ItemStack stack, @Nullable NBTTagCompound tag)
+    public static void setTag(ItemStack stack, @Nullable NbtCompound tag)
     {
         stack.setTagCompound(tag);
     }
+    */
 
-    public static ItemStack fromTag(NBTTagCompound tag)
+    public static ItemStack fromTag(NbtCompound tag)
     {
         return new ItemStack(tag);
     }
 
     public static boolean isEmpty(ItemStack stack)
     {
-        return stack.isEmpty();
+        return stack == null || stack.size <= 0;
     }
 
     public static boolean notEmpty(ItemStack stack)
     {
-        return stack.isEmpty() == false;
+        return stack != null && stack.size > 0;
     }
 
     public static String getStackString(ItemStack stack)
@@ -38,7 +40,7 @@ public class ItemWrap
         if (ItemWrap.notEmpty(stack))
         {
             String id = RegistryUtils.getItemIdStr(stack.getItem());
-            NBTTagCompound tag = ItemWrap.getTag(stack);
+            NbtCompound tag = ItemWrap.getTag(stack);
 
             return String.format("[%s @ %d - display: %s - NBT: %s] (%s)",
                                  id != null ? id : "null", stack.getMetadata(), stack.getDisplayName(),
