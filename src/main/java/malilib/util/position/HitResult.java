@@ -66,22 +66,21 @@ public class HitResult
             default:        return new RayTraceResult(RayTraceResult.Type.MISS, net.minecraft.util.math.Vec3d.ZERO, Direction.DOWN.getVanillaDirection(), net.minecraft.util.math.BlockPos.ORIGIN);
         }
     }
+    */
 
-    public static HitResult of(@Nullable RayTraceResult trace)
+    public static HitResult of(@Nullable net.minecraft.world.HitResult trace)
     {
         if (trace == null)
         {
             return miss();
         }
 
-        switch (trace.typeOfHit)
+        switch (trace.type)
         {
-            case BLOCK:     return block(BlockPos.of(trace.getBlockPos()), Direction.of(trace.sideHit), Vec3d.of(trace.hitVec));
-            case ENTITY:    return entity(trace.entityHit, Vec3d.of(trace.hitVec));
-            case MISS:
+            case BLOCK:     return block(new BlockPos(trace.x, trace.y, trace.z), Direction.byIndex(trace.face), Vec3d.of(trace.offset));
+            case ENTITY:    return entity(trace.entity, Vec3d.of(trace.offset));
             default:
                 return miss();
         }
     }
-    */
 }

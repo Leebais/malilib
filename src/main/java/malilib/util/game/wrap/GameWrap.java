@@ -1,34 +1,29 @@
 package malilib.util.game.wrap;
 
-import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.entity.living.player.InputPlayerEntity;
-import net.minecraft.client.multiplayer.PlayerControllerMP;
-import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.entity.living.player.LocalPlayerEntity;
+import net.minecraft.client.interaction.ClientPlayerInteractionManager;
+import net.minecraft.client.network.handler.ClientNetworkHandler;
 import net.minecraft.client.options.GameOptions;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.living.player.PlayerEntity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Container;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextComponentString;
+import net.minecraft.inventory.menu.InventoryMenu;
 import net.minecraft.world.World;
 
+import malilib.mixin.access.MinecraftMixin;
 import malilib.util.position.HitResult;
 
 public class GameWrap
 {
     public static Minecraft getClient()
     {
-        return Minecraft.getMinecraft();
+        return MinecraftMixin.malilib_getMinecraft();
     }
 
     @Nullable
@@ -57,37 +52,37 @@ public class GameWrap
     }
 
     @Nullable
-    public static Container getPlayerInventoryContainer()
+    public static InventoryMenu getPlayerInventoryContainer()
     {
-        EntityPlayer player = getClient().player;
-        return player != null ? player.inventoryContainer : null;
+        PlayerEntity player = getClient().player;
+        return player != null ? player.playerMenu : null;
     }
 
     @Nullable
-    public static Container getCurrentInventoryContainer()
+    public static InventoryMenu getCurrentInventoryContainer()
     {
-        EntityPlayer player = getClient().player;
-        return player != null ? player.openContainer : null;
+        PlayerEntity player = getClient().player;
+        return player != null ? player.menu : null;
     }
 
-    public static PlayerControllerMP getInteractionManager()
+    public static ClientPlayerInteractionManager getInteractionManager()
     {
-        return getClient().playerController;
+        return getClient().interactionManager;
     }
 
-    public static void clickSlot(int syncId, int slotId, int mouseButton, ClickType clickType)
+    public static void clickSlot(int syncId, int slotId, int mouseButton, boolean quickMove)
     {
-        PlayerControllerMP controller = getInteractionManager();
+        ClientPlayerInteractionManager controller = getInteractionManager();
 
         if (controller != null)
         {
-            controller.windowClick(syncId, slotId, mouseButton, clickType, getClientPlayer());
+            controller.clickSlot(syncId, slotId, mouseButton, quickMove, getClientPlayer());
         }
     }
 
     public static double getPlayerReachDistance()
     {
-        return getInteractionManager().getBlockReachDistance();
+        return getInteractionManager().getReach();
     }
 
     /*
@@ -99,9 +94,10 @@ public class GameWrap
     */
 
     @Nullable
-    public static NetHandlerPlayClient getNetworkConnection()
+    public static ClientNetworkHandler getNetworkConnection()
     {
-        return getClient().getConnection();
+        InputPlayerEntity player = getClientPlayer();
+        return player instanceof LocalPlayerEntity ? ((LocalPlayerEntity) player).networkHandler : null;
     }
 
     public static GameOptions getOptions()
@@ -111,12 +107,13 @@ public class GameWrap
 
     public static void printToChat(String msg)
     {
-        getClient().ingameGUI.addChatMessage(ChatType.CHAT, new TextComponentString(msg));
+        getClient().gui.addChatMessage(msg);
     }
 
     public static void showHotbarMessage(String msg)
     {
-        getClient().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentString(msg));
+        // TODO b1.7.3
+        //getClient().ingameGUI.addChatMessage(ChatType.GAME_INFO, new TextComponentString(msg));
     }
 
     public static boolean sendChatMessage(String command)
@@ -155,13 +152,13 @@ public class GameWrap
 
     public static String getPlayerName()
     {
-        Entity player = getClientPlayer();
-        return player != null ? player.getName() : "?";
+        PlayerEntity player = getClientPlayer();
+        return player != null ? player.name : "?";
     }
 
     public static HitResult getHitResult()
     {
-        return HitResult.of(getClient().objectMouseOver);
+        return HitResult.of(getClient().crosshairTarget);
     }
 
     public static long getCurrentWorldTick()
@@ -177,31 +174,32 @@ public class GameWrap
 
     public static int getRenderDistanceChunks()
     {
-        return getOptions().renderDistanceChunks;
+        return getOptions().viewDistance;
     }
 
     public static int getVanillaOptionsScreenScale()
     {
-        return GameWrap.getOptions().guiScale;
+        return getOptions().guiScale;
     }
 
     public static boolean isSinglePlayer()
     {
-        return getClient().isSingleplayer();
+        return getClient().isMultiplayer() == false;
     }
 
     public static boolean isUnicode()
     {
-        return getClient().isUnicode();
+        return false; // TODO b1.7.3 getClient().isUnicode();
     }
 
     public static boolean isHideGui()
     {
-        return getOptions().hideGUI;
+        return false; // TODO b1.7.3 getOptions().hideGUI;
     }
 
     public static void scheduleToClientThread(Runnable task)
     {
+        /* TODO b1.7.3
         Minecraft mc = getClient();
 
         if (mc.isCallingFromMinecraftThread())
@@ -212,6 +210,7 @@ public class GameWrap
         {
             mc.addScheduledTask(task);
         }
+        */
     }
 
     public static void profilerPush(String name)
@@ -241,18 +240,21 @@ public class GameWrap
 
     public static void openFile(Path file)
     {
-        OpenGlHelper.openFile(file.toFile());
+        // TODO b1.7.3
+        //OpenGlHelper.openFile(file.toFile());
     }
 
     @Nullable
     public static Path getCurrentSinglePlayerWorldDirectory()
     {
+        /* TODO b1.7.3
         if (isSinglePlayer())
         {
             MinecraftServer server = getIntegratedServer();
             File file = server.getActiveAnvilConverter().getFile(server.getFolderName(), "icon.png");
             return file.getParentFile().toPath();
         }
+        */
 
         return null;
     }

@@ -3,8 +3,7 @@ package malilib.render;
 import java.util.List;
 import org.lwjgl.opengl.GL11;
 
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.Entity;
 
 import malilib.gui.util.GuiUtils;
@@ -22,7 +21,7 @@ public class TextRenderUtils
 {
     public static Vec2i getScreenClampedHoverTextStartPosition(int x, int y, int renderWidth, int renderHeight)
     {
-        GuiScreen screen = GuiUtils.getCurrentScreen();
+        Screen screen = GuiUtils.getCurrentScreen();
         int maxWidth = screen != null ? screen.width : GuiUtils.getScaledWindowWidth();
         int maxHeight = screen != null ? screen.height : GuiUtils.getScaledWindowHeight();
         int textStartX = x;
@@ -181,7 +180,8 @@ public class TextRenderUtils
     public static void renderTextPlate(List<String> text, double x, double y, double z, float yaw, float pitch,
                                        float scale, int textColor, int bgColor, boolean disableDepth, RenderContext ctx)
     {
-        FontRenderer textRenderer = GameWrap.getClient().fontRenderer;
+        net.minecraft.client.render.TextRenderer textRenderer = GameWrap.getClient().textRenderer;
+        int fontHeight = 8;
 
         RenderWrap.alphaFunc(GL11.GL_GREATER, 0.1F);
         RenderWrap.pushMatrix(ctx);
@@ -201,11 +201,11 @@ public class TextRenderUtils
 
         for (String line : text)
         {
-            maxLineLen = Math.max(maxLineLen, textRenderer.getStringWidth(line));
+            maxLineLen = Math.max(maxLineLen, textRenderer.getWidth(line));
         }
 
         int strLenHalf = maxLineLen / 2;
-        int textHeight = textRenderer.FONT_HEIGHT * text.size() - 1;
+        int textHeight = fontHeight * text.size() - 1;
         int bga = (bgColor >> 24) & 0xFF;
         int bgr = (bgColor >> 16) & 0xFF;
         int bgg = (bgColor >>  8) & 0xFF;
@@ -246,15 +246,15 @@ public class TextRenderUtils
                 RenderWrap.disableDepthTest();
 
                 // Render the faint version that will also show through blocks
-                textRenderer.drawString(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
+                textRenderer.draw(line, -strLenHalf, textY, 0x20000000 | (textColor & 0xFFFFFF));
 
                 RenderWrap.enableDepthTest();
                 RenderWrap.depthMask(true);
             }
 
             // Render the actual fully opaque text, that will not show through blocks
-            textRenderer.drawString(line, -strLenHalf, textY, textColor);
-            textY += textRenderer.FONT_HEIGHT;
+            textRenderer.draw(line, -strLenHalf, textY, textColor);
+            textY += fontHeight;
         }
 
         if (disableDepth == false)

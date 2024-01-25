@@ -2,18 +2,13 @@ package malilib.render;
 
 import java.util.List;
 
-import net.minecraft.init.Items;
-import net.minecraft.item.ItemMap;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.storage.MapData;
 
 import malilib.gui.icon.Icon;
 import malilib.gui.icon.PositionedIcon;
-import malilib.gui.util.GuiUtils;
 import malilib.render.buffer.VanillaWrappingVertexBuilder;
 import malilib.render.buffer.VertexBuilder;
 import malilib.util.data.Identifier;
-import malilib.util.game.wrap.GameWrap;
 import malilib.util.game.wrap.RenderWrap;
 import malilib.util.position.Vec2i;
 
@@ -162,7 +157,8 @@ public class RenderUtils
 
     public static void renderMapPreview(ItemStack stack, int x, int y, float z, int dimensions, RenderContext ctx)
     {
-        if (stack.getItem() instanceof ItemMap)
+        /* TODO b1.7.3
+        if (stack.getItem() instanceof FilledMapItem)
         {
             RenderWrap.pushMatrix(ctx);
             RenderWrap.disableLighting();
@@ -213,5 +209,6 @@ public class RenderUtils
             RenderWrap.popMatrix(ctx);
             RenderWrap.color(1f, 1f, 1f, 1f);
         }
+        */
     }
 }

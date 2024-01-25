@@ -493,6 +493,7 @@ public abstract class BaseScreen extends Screen
 
         RenderWrap.color(1f, 1f, 1f, 1f);
         RenderWrap.setupBlendSeparate();
+
         ScreenContext ctx = this.getContext();
 
         // These are after the parent rendering, because the parent
