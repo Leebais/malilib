@@ -189,7 +189,7 @@ public class GameWrap
 
     public static boolean isSinglePlayer()
     {
-        return getClient().isMultiplayer() == false;
+        return getClientWorld() != null && getClient().isMultiplayer() == false;
     }
 
     public static boolean isUnicode()
