@@ -57,7 +57,7 @@ public class DefaultMessageDispatchers
     {
         if (text.lines.size() > 0)
         {
-            sendCustomHotbarMessageString(text.lines.get(0).displayText, messageDispatcher);
+            sendVanillaHotbarMessageString(text.lines.get(0).displayText, messageDispatcher);
         }
     }
 
