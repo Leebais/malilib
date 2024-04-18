@@ -117,8 +117,8 @@ public class InventoryRenderDefinition
 
     public static class Builder
     {
-        protected final Int2ObjectOpenHashMap<Vec2i> customSlotPositions = new Int2ObjectOpenHashMap<>(1, 1f);
-        protected final Int2ObjectOpenHashMap<PositionedIcon> emptySlotTextures = new Int2ObjectOpenHashMap<>(1, 1f);
+        protected final Int2ObjectOpenHashMap<Vec2i> customSlotPositions = new Int2ObjectOpenHashMap<>();
+        protected final Int2ObjectOpenHashMap<PositionedIcon> emptySlotTextures = new Int2ObjectOpenHashMap<>();
         protected final List<PositionedIcon> backgroundTextures = new ArrayList<>();
         protected final List<InventoryRange> inventoryRanges = new ArrayList<>();
         protected Vec2i slotOffset = new Vec2i(8, 8);
