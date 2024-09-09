@@ -26,14 +26,16 @@ public class GuiUtils
     {
         int scale = Math.min(getDisplayWidth() / 320, getDisplayHeight() / 240);
         scale = Math.max(scale, 1);
-        return getDisplayWidth() / scale;
+        scale = Math.min(scale, GameWrap.getVanillaOptionsScreenScale());
+        return getDisplayWidth() / getVanillaScreenScale();
     }
 
     public static int getScaledWindowHeight()
     {
         int scale = Math.min(getDisplayWidth() / 320, getDisplayHeight() / 240);
         scale = Math.max(scale, 1);
-        return getDisplayHeight() / scale;
+        scale = Math.min(scale, GameWrap.getVanillaOptionsScreenScale());
+        return getDisplayHeight() / getVanillaScreenScale();
     }
 
     public static int getVanillaScreenScale()
