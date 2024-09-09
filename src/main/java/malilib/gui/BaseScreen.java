@@ -490,6 +490,7 @@ public abstract class BaseScreen extends GuiScreen
 
         RenderWrap.color(1f, 1f, 1f, 1f);
         RenderWrap.setupBlendSeparate();
+        ScreenContext ctx = this.getContext();
 
         // These are after the parent rendering, because the parent
         // can/will also both enable and disable the custom scale,
@@ -497,20 +498,15 @@ public abstract class BaseScreen extends GuiScreen
         // rendering the parent screen.
         if (this.useCustomScreenScaling)
         {
-            RenderWrap.setupScaledScreenRendering(this.customScreenScale);
+            RenderWrap.setupScaledScreenRendering(this.customScreenScale, ctx);
         }
-
-        ScreenContext ctx = this.getContext();
 
         this.renderScreenBackground(ctx);
         this.renderScreenTitle(ctx);
 
         // Draw base widgets
         this.renderWidgets(ctx);
-        //super.drawScreen(mouseX, mouseY, partialTicks);
-
         this.renderCustomContents(ctx);
-
         this.renderHoveredWidget(ctx);
 
         if (ctx.getRenderDebug())
@@ -522,7 +518,7 @@ public abstract class BaseScreen extends GuiScreen
 
         if (this.useCustomScreenScaling)
         {
-            RenderWrap.setupScaledScreenRendering(GuiUtils.getVanillaScreenScale());
+            RenderWrap.setupScaledScreenRendering(GuiUtils.getVanillaScreenScale(), ctx);
         }
     }
 

@@ -54,23 +54,23 @@ public class RenderWrap
                              BlendDestFactor.ZERO);
     }
 
-    public static void setupScaledScreenRendering(double scaleFactor)
+    public static void setupScaledScreenRendering(double scaleFactor, RenderContext ctx)
     {
         double width = GuiUtils.getDisplayWidth() / scaleFactor;
         double height = GuiUtils.getDisplayHeight() / scaleFactor;
 
-        setupScaledScreenRendering(width, height);
+        setupScaledScreenRendering(width, height, ctx);
     }
 
-    public static void setupScaledScreenRendering(double width, double height)
+    public static void setupScaledScreenRendering(double width, double height, RenderContext ctx)
     {
         GlStateManager.clear(256);
-        GlStateManager.matrixMode(GL11.GL_PROJECTION);
+        matrixMode(GL11.GL_PROJECTION);
         GlStateManager.loadIdentity();
         GlStateManager.ortho(0.0D, width, height, 0.0D, 1000.0D, 3000.0D);
-        GlStateManager.matrixMode(GL11.GL_MODELVIEW);
+        matrixMode(GL11.GL_MODELVIEW);
         GlStateManager.loadIdentity();
-        GlStateManager.translate(0.0F, 0.0F, -2000.0F);
+        translate(0.0F, 0.0F, -2000.0F, ctx);
     }
 
     public static void enableAlpha()
