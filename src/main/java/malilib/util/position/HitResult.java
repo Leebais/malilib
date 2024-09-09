@@ -56,17 +56,16 @@ public class HitResult
         return new HitResult(Type.ENTITY, null, null, exactPos, entity);
     }
 
-    /*
-    public net.minecraft.util.math.RayTraceResult toVanilla()
+    @Nullable
+    public net.minecraft.world.HitResult toVanilla()
     {
         switch (this.type)
         {
-            case BLOCK:     return new RayTraceResult(this.pos.toVanilla(), this.side.getVanillaDirection(), this.blockPos.toVanillaPos());
-            case ENTITY:    return new RayTraceResult(this.entity, this.pos.toVanilla());
-            default:        return new RayTraceResult(RayTraceResult.Type.MISS, net.minecraft.util.math.Vec3d.ZERO, Direction.DOWN.getVanillaDirection(), net.minecraft.util.math.BlockPos.ORIGIN);
+            case BLOCK:     return new net.minecraft.world.HitResult(this.blockPos.x, this.blockPos.y, this.blockPos.z, this.side.getIndex(), this.pos.toVanilla());
+            case ENTITY:    return new net.minecraft.world.HitResult(this.entity);
+            default:        return null;
         }
     }
-    */
 
     public static HitResult of(@Nullable net.minecraft.world.HitResult trace)
     {

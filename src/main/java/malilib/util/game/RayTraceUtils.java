@@ -6,8 +6,7 @@ import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 
 import malilib.util.MathUtils;
@@ -41,23 +40,24 @@ public class RayTraceUtils
 
         if (includeEntities)
         {
-            AxisAlignedBB bb = entity.getEntityBoundingBox()
-                                .expand(rangedLook.x, rangedLook.y, rangedLook.z).expand(1d, 1d, 1d);
-            List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(entity, bb);
+            Box bb = entity.shape
+                                .expand(rangedLook.x, rangedLook.y, rangedLook.z).expand(1.0, 1.0, 1.0);
+            @SuppressWarnings("unchecked")
+            List<Entity> list = (List<Entity>) world.getEntities(entity, bb);
 
             double closest = result != null && result.type == HitResult.Type.BLOCK ?
                                      eyesPos.squareDistanceTo(result.pos) : Double.MAX_VALUE;
-            RayTraceResult entityTrace = null;
+            net.minecraft.world.HitResult entityTrace = null;
             Entity targetEntity = null;
 
             for (Entity entityTmp : list)
             {
-                bb = entityTmp.getEntityBoundingBox();
-                RayTraceResult traceTmp = bb.calculateIntercept(eyesPos.toVanilla(), lookEndPos.toVanilla());
+                bb = entityTmp.shape;
+                net.minecraft.world.HitResult traceTmp = bb.clip(eyesPos.toVanilla(), lookEndPos.toVanilla());
 
                 if (traceTmp != null)
                 {
-                    double distance = eyesPos.squareDistanceTo(traceTmp.hitVec);
+                    double distance = eyesPos.squareDistanceTo(traceTmp.x, traceTmp.y, traceTmp.z);
 
                     if (distance < closest)
                     {
@@ -70,7 +70,7 @@ public class RayTraceUtils
 
             if (targetEntity != null)
             {
-                result = HitResult.entity(targetEntity, Vec3d.of(entityTrace.hitVec));
+                result = HitResult.entity(targetEntity, new Vec3d(entityTrace.x, entityTrace.y, entityTrace.z));
             }
         }
 
@@ -111,12 +111,12 @@ public class RayTraceUtils
      * @param world
      * @param start The start position of the trace
      * @param end The end position of the trace
-     * @param fluidMode Whether or not to trace to fluids
+     * @param fluidMode Whether to trace to fluids
      * @param blockFilter A test to check if the block is valid for a hit result
      * @param ignoreNonCollidable If true, then blocks without a hard collision box are ignored
      * @param returnLastUncollidableBlock If true, then the last block position without a hard collision box is returned, if no other blocks were hit
      * @param layerRange The LayerRange within which to ray trace. Set to null if the trace should not care about layer ranges.
-     * @param maxSteps the maximum number of advance loops. Should be larger than the maximum desired maximum ray trace length in blocks.
+     * @param maxSteps the maximum number of advance loops. Should be larger than the maximum desired ray trace length in blocks.
      * @return the ray trace result, or null if the trace didn't hit any blocks
      */
     @Nullable
@@ -138,7 +138,7 @@ public class RayTraceUtils
             if (handler.handleRayTracePosition(data, world, ignoreNonCollidable))
             {
                 //System.out.printf("checkCollision() - steps: %d, trace: %s\n", maxSteps, data.trace);
-                return HitResult.of(data.trace);
+                return data.trace;
             }
 
             if (rayTraceAdvance(data))
@@ -157,6 +157,7 @@ public class RayTraceUtils
         return null;
     }
 
+    /* TODO b1.7.3
     public static boolean checkRayCollision(RayTraceCalculationData data, World world, boolean ignoreNonCollidable)
     {
         if (data.isPositionWithinRange())
@@ -169,8 +170,8 @@ public class RayTraceUtils
             {
                 if (state.getBlock().canCollideCheck(state, false) || data.fluidMode.handled(state))
                 {
-                    RayTraceResult traceTmp = state.collisionRayTrace(world, data.mutablePos.toImmutable(),
-                                                                      data.start.toVanilla(), data.end.toVanilla());
+                    HitResult traceTmp = state.collisionRayTrace(world, data.mutablePos.toImmutable(),
+                                                                 data.start, data.end);
 
                     if (traceTmp != null)
                     {
@@ -183,6 +184,7 @@ public class RayTraceUtils
 
         return false;
     }
+    */
 
     /*// 1.15.2 version
     @Nullable
@@ -372,7 +374,7 @@ public class RayTraceUtils
         public double currentY;
         public double currentZ;
         public Direction facing;
-        @Nullable public RayTraceResult trace;
+        @Nullable public HitResult trace;
 
         public RayTraceCalculationData(Vec3d start, Vec3d end, RayTraceFluidHandling fluidMode,
                                        BlockStatePredicate blockFilter, @Nullable LayerRange range)
@@ -399,9 +401,9 @@ public class RayTraceUtils
             this.mutablePos.set(this.blockX, this.blockY, this.blockZ);
         }
 
-        public boolean isValidBlock(@Nullable Block state)
+        public boolean isValidBlock(@Nullable Block block, int meta)
         {
-            return this.blockFilter.test(state);
+            return this.blockFilter.test(block, meta);
         }
 
         public boolean isPositionWithinRange()
@@ -411,6 +413,7 @@ public class RayTraceUtils
 
         public boolean checkRayCollision(World world, boolean ignoreNonCollidable)
         {
+            /* TODO b1.7.3
             if (this.isPositionWithinRange() == false)
             {
                 return false;
@@ -427,8 +430,8 @@ public class RayTraceUtils
 
             if (state.getBlock().canCollideCheck(state, false) || this.fluidMode.handled(state))
             {
-                RayTraceResult traceTmp = state.collisionRayTrace(world, this.mutablePos,
-                                                                  this.start.toVanilla(), this.end.toVanilla());
+                HitResult traceTmp = state.collisionRayTrace(world, this.mutablePos,
+                                                                  this.start, this.end);
 
                 if (traceTmp != null)
                 {
@@ -436,19 +439,20 @@ public class RayTraceUtils
                     return true;
                 }
             }
+            */
 
             return false;
         }
     }
 
-    public static final BlockStatePredicate BLOCK_FILTER_ANY = (state) -> true;
-    public static final BlockStatePredicate BLOCK_FILTER_NON_AIR = (state) -> state.getMaterial() != Material.AIR;
+    public static final BlockStatePredicate BLOCK_FILTER_ANY = (block, meta) -> true;
+    public static final BlockStatePredicate BLOCK_FILTER_NON_AIR = (block, meta) -> block != null && block.material != Material.AIR;
 
     public enum RayTraceFluidHandling
     {
-        NONE((blockState) -> BlockUtils.isFluidBlock(blockState) == false),
-        SOURCE_ONLY(BlockUtils::isFluidSourceBlock),
-        ANY(BlockUtils::isFluidBlock);
+        NONE((block, meta) -> BlockUtils.isFluidBlock(block) == false),
+        SOURCE_ONLY((block, meta) -> BlockUtils.isFluidSourceBlock(block)),
+        ANY((block, meta) -> BlockUtils.isFluidBlock(block));
 
         private final BlockStatePredicate predicate;
 
@@ -457,9 +461,9 @@ public class RayTraceUtils
             this.predicate = predicate;
         }
 
-        public boolean handled(Block blockState)
+        public boolean handled(Block block, int meta)
         {
-            return this.predicate.test(blockState);
+            return this.predicate.test(block, meta);
         }
      }
 
@@ -474,6 +478,6 @@ public class RayTraceUtils
 
     public interface BlockStatePredicate
     {
-        boolean test(Block state);
+        boolean test(Block block, int meta);
     }
 }

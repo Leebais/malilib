@@ -1,19 +1,10 @@
 package malilib.render.text;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.util.function.IntConsumer;
 import java.util.regex.Pattern;
-import com.ibm.icu.text.ArabicShaping;
-import com.ibm.icu.text.ArabicShapingException;
-import com.ibm.icu.text.Bidi;
 
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.resources.IResource;
-
-import malilib.MaLiLib;
 import malilib.util.data.Identifier;
-import malilib.util.game.wrap.GameWrap;
 
 public class TextRendererUtils
 {
@@ -53,6 +44,7 @@ public class TextRendererUtils
 
     public static void readGlyphSizes(byte[] glyphWidth)
     {
+        /* TODO b1.7.3
         try (IResource resource = GameWrap.getClient().getResourceManager().getResource(new Identifier("font/glyph_sizes.bin")))
         {
             if (resource.getInputStream().read(glyphWidth) <= 0)
@@ -64,13 +56,15 @@ public class TextRendererUtils
         {
             throw new RuntimeException(e);
         }
+        */
     }
 
     public static void readCharacterWidthsFromFontTexture(Identifier texture, int[] charWidthArray,
                                                           IntConsumer glyphWidthListener, IntConsumer glyphHeightListener)
     {
-        BufferedImage bufferedImage;
+        BufferedImage bufferedImage = null;
 
+        /* TODO b1.7.3
         try (IResource resource = GameWrap.getClient().getResourceManager().getResource(texture))
         {
             bufferedImage = TextureUtil.readBufferedImage(resource.getInputStream());
@@ -78,6 +72,12 @@ public class TextRendererUtils
         catch (IOException e)
         {
             throw new RuntimeException(e);
+        }
+        */
+
+        if (bufferedImage == null)
+        {
+            return;
         }
 
         int imageWidth = bufferedImage.getWidth();

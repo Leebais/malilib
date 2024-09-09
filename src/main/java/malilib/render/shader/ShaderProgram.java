@@ -1,8 +1,5 @@
 package malilib.render.shader;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL20;
 
@@ -114,6 +111,7 @@ public class ShaderProgram
 
     private String loadFile(final Identifier resourceLocation)
     {
+        /* TODO b1.7.3
         try
         {
             final StringBuilder code = new StringBuilder();
@@ -136,6 +134,7 @@ public class ShaderProgram
         {
             MaLiLib.LOGGER.error("Could not load shader file!", e);
         }
+        */
 
         return null;
     }

@@ -241,6 +241,7 @@ public class ConfigLockHandler
 
     protected void readLocksFromServer()
     {
+        /*
         ServerData serverData = GameWrap.getClient().getCurrentServerData();
 
         if (serverData != null)
@@ -263,6 +264,7 @@ public class ConfigLockHandler
                 }
             }
         }
+        */
     }
 
     protected void readLockConfigFromFile(Path file)

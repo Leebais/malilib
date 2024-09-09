@@ -14,6 +14,8 @@ import org.lwjgl.opengl.GL14;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GLContext;
 
+import net.minecraft.client.render.texture.TextureManager;
+
 import malilib.gui.util.GuiUtils;
 import malilib.render.RenderContext;
 import malilib.util.data.Identifier;
@@ -38,7 +40,8 @@ public class RenderWrap
 
     public static void bindTexture(Identifier texture)
     {
-        GameWrap.getClient().getTextureManager().bindTexture(texture);
+        TextureManager manager = GameWrap.getClient().textureManager;
+        manager.bind(manager.load(texture.toString()));
     }
 
     public static void setupBlendSimple()
@@ -334,7 +337,7 @@ public class RenderWrap
         return true; //OpenGlHelper.useVbo();
     }
 
-    public static void colorPointer(int size, int type, int stride, int bufferOffset)
+    public static void colorPointer(int size, int type, int stride, long bufferOffset)
     {
         GL11.glColorPointer(size, type, stride, bufferOffset);
     }
@@ -354,7 +357,7 @@ public class RenderWrap
         GL11.glNormalPointer(type, stride, buffer);
     }
 
-    public static void texCoordPointer(int size, int type, int stride, int bufferOffset)
+    public static void texCoordPointer(int size, int type, int stride, long bufferOffset)
     {
         GL11.glTexCoordPointer(size, type, stride, bufferOffset);
     }
@@ -364,7 +367,7 @@ public class RenderWrap
         GL11.glTexCoordPointer(size, type, stride, buffer);
     }
 
-    public static void vertexPointer(int size, int type, int stride, int bufferOffset)
+    public static void vertexPointer(int size, int type, int stride, long bufferOffset)
     {
         GL11.glVertexPointer(size, type, stride, bufferOffset);
     }
