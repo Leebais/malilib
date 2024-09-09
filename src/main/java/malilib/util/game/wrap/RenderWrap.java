@@ -40,8 +40,9 @@ public class RenderWrap
 
     public static void bindTexture(Identifier texture)
     {
+        String path = String.format("/assets/%s/%s", texture.getNamespace(), texture.getPath());
         TextureManager manager = GameWrap.getClient().textureManager;
-        manager.bind(manager.load(texture.toString()));
+        manager.bind(manager.load(path));
     }
 
     public static void setupBlendSimple()
