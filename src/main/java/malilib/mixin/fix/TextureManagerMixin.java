@@ -7,9 +7,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.client.render.texture.TextureManager;
+
+import malilib.render.text.TextRenderer;
 
 @Mixin(TextureManager.class)
 public class TextureManagerMixin
@@ -34,5 +37,11 @@ public class TextureManagerMixin
         {
             cir.setReturnValue(this.image);
         }
+    }
+
+    @Inject(method = "reload", at = @At("TAIL"))
+    private void malilib_onPostReload(CallbackInfo ci)
+    {
+        TextRenderer.INSTANCE.onResourceManagerReload();
     }
 }
