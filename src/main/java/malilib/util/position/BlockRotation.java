@@ -6,10 +6,10 @@ import malilib.util.StringUtils;
 
 public enum BlockRotation
 {
-    NONE    (0, Rotation.NONE, "none"),
-    CW_90   (1, Rotation.CLOCKWISE_90, "rotate_90"),
-    CW_180  (2, Rotation.CLOCKWISE_180, "rotate_180"),
-    CCW_90  (3, Rotation.COUNTERCLOCKWISE_90, "rotate_270");
+    NONE    (0, "none",       Rotation.NONE),
+    CW_90   (1, "rotate_90",  Rotation.CLOCKWISE_90),
+    CW_180  (2, "rotate_180", Rotation.CLOCKWISE_180),
+    CCW_90  (3, "rotate_270", Rotation.COUNTERCLOCKWISE_90);
 
     public static final BlockRotation[] VALUES = values();
 
@@ -18,12 +18,12 @@ public enum BlockRotation
     private final String translationKey;
     private final Rotation vanillaRotation;
 
-    BlockRotation(int index, Rotation vanillaRotation, String name)
+    BlockRotation(int index, String name, Rotation vanillaRotation)
     {
         this.index = index;
-        this.vanillaRotation = vanillaRotation;
         this.name = name;
         this.translationKey = "malilib.label.block_rotation." + name;
+        this.vanillaRotation = vanillaRotation;
     }
 
     public String getName()
