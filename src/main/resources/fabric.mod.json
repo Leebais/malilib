@@ -17,7 +17,7 @@
 	"icon": "assets/malilib/icon.png",
 	"environment": "client",
 	"entrypoints": {
-		"client-init": [
+		"client": [
 			"malilib.MaLiLib"
 		],
 		"modmenu": [
