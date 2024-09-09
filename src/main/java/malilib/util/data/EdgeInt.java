@@ -210,7 +210,6 @@ public class EdgeInt
     {
         JsonArray arr = new JsonArray();
 
-        arr.add(this.top);
         arr.add(new JsonPrimitive(this.top));
         arr.add(new JsonPrimitive(this.right));
         arr.add(new JsonPrimitive(this.bottom));
