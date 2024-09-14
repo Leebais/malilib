@@ -213,13 +213,13 @@ public class ToastRendererWidgetEditScreen extends BaseScreen
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getMargin(), false,
                                                          "malilib.title.screen.edit_margin", "malilib.label.misc.margin");
-        BaseScreen.openScreenWithParent(screen);
+        BaseScreen.openPopupScreenWithParent(screen);
     }
 
     protected void openPaddingEditScreen()
     {
         EdgeIntEditScreen screen = new EdgeIntEditScreen(this.widget.getPadding(), false,
                                                          "malilib.title.screen.edit_padding", "malilib.label.misc.padding");
-        BaseScreen.openScreenWithParent(screen);
+        BaseScreen.openPopupScreenWithParent(screen);
     }
 }

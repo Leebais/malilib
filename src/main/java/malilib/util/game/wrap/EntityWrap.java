@@ -50,6 +50,7 @@ public class EntityWrap
 
         return eyeHeight;
     }
+
     public static Vec3d getEntityEyePos(Entity entity)
     {
         return new Vec3d(getX(entity), getY(entity) + getEyeHeight(entity), getZ(entity));

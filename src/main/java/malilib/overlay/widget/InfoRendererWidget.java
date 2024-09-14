@@ -25,6 +25,7 @@ import malilib.registry.Registry;
 import malilib.render.ShapeRenderUtils;
 import malilib.render.text.MultiLineTextRenderSettings;
 import malilib.render.text.StyledTextLine;
+import malilib.render.text.TextRenderer;
 import malilib.util.data.EdgeInt;
 import malilib.util.data.json.JsonUtils;
 import malilib.util.game.wrap.RenderWrap;
@@ -397,24 +398,29 @@ public abstract class InfoRendererWidget extends BaseOverlayWidget
     {
         this.renderDebug(x, y, z, false, ctx);
 
-        StyledTextLine line = StyledTextLine.unParsed(this.getClass().getName());
-        int lineLen = line.renderWidth;
         int screenWidth = GuiUtils.getScaledWindowWidth();
         int screenHeight = GuiUtils.getScaledWindowHeight();
+        String strPos = String.format("x: %d, y: %d, w: %d, h: %d, sw: %d, sh: %d", this.getX(), this.getY(), this.getWidth(), this.getHeight(), screenWidth, screenHeight);
+        StyledTextLine line1 = StyledTextLine.unParsed(this.getClass().getName());
+        StyledTextLine line2 = StyledTextLine.unParsed(strPos);
+        int lineLen = line1.renderWidth;
 
         if (x + lineLen >= screenWidth)
         {
             x = screenWidth - lineLen - 16;
         }
 
-        int textY = this.getBottom() + 1;
+        int textY1 = this.getBottom() + 1;
+        int textY2 = textY1 + TextRenderer.INSTANCE.getLineHeight();
 
-        if (textY + 12 >= screenHeight)
+        if (textY1 + 12 >= screenHeight)
         {
-            textY = this.getY() - 12;
+            textY1 = this.getY() - 12;
+            textY2 = textY1 - TextRenderer.INSTANCE.getLineHeight();
         }
 
-        this.renderTextLine(x, textY, z, 0xFF33FFFF, true, line, ctx);
+        this.renderTextLine(x, textY1, z, 0xFF33FFFF, true, line1, ctx);
+        this.renderTextLine(x, textY2, z, 0xFF33FFFF, true, line2, ctx);
     }
 
     @Override

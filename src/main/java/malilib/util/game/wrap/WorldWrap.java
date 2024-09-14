@@ -18,10 +18,21 @@ public class WorldWrap
     }
     */
 
+    public static long getTotalTick(World world)
+    {
+        return world.time;
+    }
+
+    public static long getDayTick(World world)
+    {
+        return world.time;
+    }
+
     /**
      * Best name. Returns the integrated server world for the current dimension
-     * in single player, otherwise just the client world.
+     * in single player, otherwise just the client world (or null if not in world).
      */
+    @Nullable
     public static World getBestWorld()
     {
         return GameWrap.getClientWorld();
