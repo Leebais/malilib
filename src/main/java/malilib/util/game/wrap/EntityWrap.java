@@ -38,9 +38,14 @@ public class EntityWrap
         return new Vec3d(getX(entity), getY(entity), getZ(entity));
     }
 
+    public static float getEyeHeight(Entity entity)
+    {
+        return entity.getEyeHeight();
+    }
+
     public static Vec3d getEntityEyePos(Entity entity)
     {
-        return new Vec3d(getX(entity), getY(entity) + entity.getEyeHeight(), getZ(entity));
+        return new Vec3d(getX(entity), getY(entity) + getEyeHeight(entity), getZ(entity));
     }
 
     public static BlockPos getEntityBlockPos(Entity entity)

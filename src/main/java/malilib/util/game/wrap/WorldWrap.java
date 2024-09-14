@@ -2,10 +2,8 @@ package malilib.util.game.wrap;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.integrated.IntegratedServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -21,22 +19,33 @@ public class WorldWrap
         return String.valueOf(world.provider.getDimensionType().getId());
     }
 
+    public static long getTotalTick(World world)
+    {
+        return world.getTotalWorldTime();
+    }
+
+    public static long getDayTick(World world)
+    {
+        return world.getWorldTime();
+    }
+
     /**
      * Best name. Returns the integrated server world for the current dimension
-     * in single player, otherwise just the client world.
+     * in single player, otherwise just the client world (or null if not in world).
      */
+    @Nullable
     public static World getBestWorld()
     {
-        Minecraft mc = GameWrap.getClient();
+        World world = GameWrap.getClientWorld();
 
-        if (mc.isSingleplayer() && mc.world != null)
+        if (GameWrap.isSinglePlayer() && world != null)
         {
-            IntegratedServer server = mc.getIntegratedServer();
-            return server.getWorld(getDimensionId(mc.world));
+            MinecraftServer server = GameWrap.getIntegratedServer();
+            return server.getWorld(getDimensionId(world));
         }
         else
         {
-            return mc.world;
+            return world;
         }
     }
 
