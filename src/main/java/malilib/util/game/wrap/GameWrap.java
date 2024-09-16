@@ -18,6 +18,7 @@ import net.minecraft.entity.living.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.world.World;
 
+import malilib.gui.util.GuiUtils;
 import malilib.util.position.HitResult;
 
 public class GameWrap
@@ -196,10 +197,8 @@ public class GameWrap
 
     public static int getVanillaOptionsScreenScale()
     {
-        /* TODO in-20100223
-        return getOptions().guiScale;
-        */
-        return 2;
+        int scale = Math.min(GuiUtils.getDisplayWidth() / 320, GuiUtils.getDisplayHeight() / 240);
+        return Math.max(scale, 1);
     }
 
     public static boolean isSinglePlayer()
