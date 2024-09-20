@@ -195,7 +195,8 @@ public class OverlayRendererContainer
                 {
                     Vec3d updatePos = renderer.getUpdatePosition();
                     RenderWrap.pushMatrix(ctx);
-                    RenderWrap.translate(updatePos.x - cx, updatePos.y - cy, updatePos.z - cz, ctx);
+                    //RenderWrap.translate(updatePos.x - cx, updatePos.y - cy, updatePos.z - cz, ctx);
+                    RenderWrap.translate(updatePos.x, updatePos.y, updatePos.z, ctx); // Indev works differently...
 
                     renderer.draw();
 
