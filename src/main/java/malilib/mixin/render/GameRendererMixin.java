@@ -5,6 +5,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.client.Minecraft;
@@ -19,8 +20,9 @@ public abstract class GameRendererMixin
     @Shadow private Minecraft minecraft;
 
     @Inject(method = "m_5195666",
+            slice =  @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/world/WorldRenderer;renderBlockOutline(Lnet/minecraft/world/HitResult;I)V")),
             at = @At(value = "INVOKE", shift = Shift.AFTER,
-                     target = "Lnet/minecraft/client/render/world/WorldRenderer;m_7874783()V"
+                     target = "Lorg/lwjgl/opengl/GL11;glClear(I)V"
         ))
     private void onRenderWorldLast(float tickDelta, CallbackInfo ci)
     {
