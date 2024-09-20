@@ -5,6 +5,12 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.GameMenuScreen;
@@ -21,7 +27,9 @@ import malilib.gui.util.GuiUtils;
 import malilib.input.ActionResult;
 import malilib.mixin.access.MinecraftMixin;
 import malilib.overlay.message.MessageDispatcher;
+import malilib.overlay.message.MessageOutput;
 import malilib.registry.Registry;
+import malilib.util.FileUtils;
 import malilib.util.MathUtils;
 import malilib.util.StringUtils;
 import malilib.util.data.ModInfo;
@@ -217,10 +225,41 @@ public class UtilityActions
 
     public static ActionResult takeScreenshot(ActionContext ctx)
     {
-        /* TODO in-20100223
         Minecraft mc = ctx.getClient();
-        GameWrap.printToChat(ScreenshotUtils.saveScreenshot(Minecraft.getRunDirectory(), mc.width, mc.height));
-        */
+
+        try
+        {
+            SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
+            Path dir = FileUtils.getMinecraftDirectory().resolve("screenshots");
+
+            if (FileUtils.createDirectoriesIfMissing(dir) == false)
+            {
+                MessageDispatcher.error("malilib.message.error.failed_to_create_directory", "screenshots");
+                return ActionResult.FAIL;
+            }
+
+            String name = String.format("%s.png", fmt.format(new Date()));
+            Path file = dir.resolve(name);
+            int i = 1;
+
+            while (Files.exists(file))
+            {
+                name = String.format("%s_%d.png", fmt.format(new Date()), i);
+                file = dir.resolve(name);
+                ++i;
+            }
+
+            BufferedImage image = GameWrap.createScreenshot(mc.width, mc.height);
+            ImageIO.write(image, "png", file.toFile());
+
+            //MessageDispatcher.generic().type(MessageOutput.CUSTOM_HOTBAR).translate("malilib.message.info.utility_actions.screenshot_saved_to_file", name);
+            MessageDispatcher.generic().type(MessageOutput.MESSAGE_OVERLAY).translate("malilib.message.info.utility_actions.screenshot_saved_to_file", name);
+            return ActionResult.SUCCESS;
+        }
+        catch (Exception e)
+        {
+            MessageDispatcher.error().console(e).translate("malilib.message.error.utility_actions.failed_to_copy_screenshot_to_clipboard");
+        }
         return ActionResult.SUCCESS;
     }
 
